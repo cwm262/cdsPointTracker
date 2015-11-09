@@ -1,0 +1,15 @@
+.danger-points-color{
+    background-color: orangered
+}
+
+.high-points-color{
+    background-color: orange
+}
+
+.low-points-color{
+    background-color: greenyellow
+}
+
+.default-color{
+    background-color: white
+}
