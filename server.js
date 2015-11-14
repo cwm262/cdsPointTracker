@@ -1,8 +1,10 @@
 var express = require('express');
 var app = express();
 var mongojs = require('mongojs');
-var db = mongojs('studentlist', ['studentlist']);
+var db = mongojs('studentlist', ['studentlist', 'studentlog']);
 var bodyParser = require('body-parser');
+var dateFormat = require('dateformat');
+var now = new Date();
 
 app.use(express.static(__dirname + "/public"));
 
@@ -19,7 +21,21 @@ app.get('/studentlist', function(req,res){
 app.post('/studentlist', function(req,res){
     req.body._id=0;
     db.studentlist.insert(req.body, function(err, doc){
-        res.json(doc);    
+        res.json(doc);
+    });
+});
+
+app.post('/studentlog', function(req,res){
+    var newDate = dateFormat();
+    var pawPrint = req.body.pawPrint;
+    var name = req.body.name;
+    var pointTotal = req.body.pointTotal;
+    db.studentlog.insert({
+        pawPrint: pawPrint,
+        date: newDate,
+        desc: name + " was added to the point tracker with " + pointTotal + " points."
+    }, function(err, doc){
+        res.json(doc);
     });
 });
 
@@ -42,6 +58,14 @@ app.put('/studentlist/:id', function(req,res){
     db.studentlist.findAndModify({query: {_id: mongojs.ObjectId(id)},
         update: {$set: {name: req.body.name, pawPrint: req.body.pawPrint, pointTotal: req.body.pointTotal}},
         new: true}, function(err, doc){
+        res.json(doc);
+    });
+});
+
+
+app.get('/studentlog/:pawPrint', function(req, res){
+    var searchPaw = req.params.pawPrint;
+    db.studentlog.find({ pawPrint: searchPaw }, function(err, doc){
         res.json(doc);
     });
 });

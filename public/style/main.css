@@ -22,18 +22,36 @@ h2 {
     margin-top: 1.3em;
 }
 
+/* CHANGE COLOR OF ROW BACKGROUNDS BASED ON POINT TOTAL */
+
 .danger-points-color{
-    background-color: orangered
+    background-color: #F80012
 }
 
 .high-points-color{
-    background-color: orange
+    background-color: #FF7800
 }
 
 .low-points-color{
-    background-color: greenyellow
+    background-color: #FFB400
+}
+
+.very-low-points-color{
+    background-color: #d7ff00
 }
 
 .default-color{
     background-color: white
+}
+
+/* CHANGE TABLE ROW TO DIFFERENT CURSOR ON HOVER */
+
+.table tr{
+    cursor: pointer;
+}
+
+/* Format the Print User History Header */
+
+#historyHeader{
+    color: purple;
 }
