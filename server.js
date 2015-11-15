@@ -19,13 +19,13 @@ app.get('/studentlist', function(req,res){
 });
 
 app.post('/studentlist', function(req,res){
-    req.body._id=0;
+    req.body._id = 0;
     var newDate = dateFormat();
     db.studentlist.insert(req.body, function(err, doc){
         db.studentlog.insert({
             id: doc._id,
             date: newDate,
-            desc: doc.name + " was added to the point tracker with " + doc.pointTotal + " points."
+            desc: doc.name + " was added to the point tracker."
         });
     });
 });
@@ -53,42 +53,33 @@ app.get('/studentlist/:id', function(req,res){
 
 app.put('/studentlist/:id', function(req,res){
     var id = req.params.id;
-    var startTotal = 0;
+    var ptChange = Number(req.body.number);
+    var startTotal = Number(0);
+    var newPts = Number(0);
     var newDate = dateFormat();
     db.studentlist.findOne({_id: mongojs.ObjectId(id)}, function(err, doc){
-        startTotal = doc.pointTotal;
-    });
-    db.studentlist.findAndModify({query: {_id: mongojs.ObjectId(id)},
-        update: {$set: {name: req.body.name, pawPrint: req.body.pawPrint, pointTotal: req.body.pointTotal}},
-        new: true}, function(err, doc){
+        startTotal = Number(doc.pointTotal);
+        newPts = ptChange + startTotal;
+        db.studentlist.findAndModify({query: {_id: mongojs.ObjectId(id)},
+            update: {$set: {pointTotal: newPts}}}, function(err, doc){
             var desc = null;
-            if(startTotal != doc.pointTotal){
-                var change = startTotal - doc.pointTotal;
-                var ptsToBeAdded = 0;
-                if(change < 0){
-                    ptsToBeAdded = change*-1;
-                    if(ptsToBeAdded == 1){
-                        desc = "1 point was added.";
-                    }
-                    else{
-                        desc = ptsToBeAdded + " points were added.";
-                    }
-                }
-                else{
-                    ptsToBeAdded = change;
-                    if(ptsToBeAdded == 1){
-                        desc = "1 point was removed.";
-                    }
-                    else{
-                        desc = ptsToBeAdded + " points were removed."
-                    }
-                }
-                db.studentlog.insert({
-                    id: doc._id,
-                    date: newDate,
-                    desc: desc
-                });
+            if(ptChange < 0) {
+                desc = ptChange + " points were removed.";
             }
+            else {
+                if(ptChange == 1) {
+                    desc = ptChange + " point was added.";
+                }
+                else {
+                    desc = ptChange + " points were added.";
+                }
+            }
+            db.studentlog.insert({
+                id: doc._id,
+                date: newDate,
+                desc: desc
+            });
+        });
         res.json(doc);
     });
 });

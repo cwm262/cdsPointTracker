@@ -2,15 +2,27 @@ var myApp = angular.module('myApp', ['ui.bootstrap']);
 
 myApp.controller('AppCtrl', ['$scope', '$http', function($scope, $http){
 
+    $scope.student = {
+        name: "",
+        pawPrint: "",
+        pointTotal: 0
+    };
+
     /* Refresh is called to update the table/list */
     var refresh = function(){
         $http.get('/studentlist').then(function(response){
             $scope.studentlist = response.data;
-            $scope.student = "";
+            $scope.student.name = "";
+            $scope.student.pawPrint = "";
+            $scope.points.number = 0;
         });
     };
 
     refresh();
+
+    $scope.points = {
+        number: 0
+    };
 
     /* showDetail sets to active the student object (s) pertaining to the selected row */
     $scope.showDetail = function(s){
@@ -39,18 +51,10 @@ myApp.controller('AppCtrl', ['$scope', '$http', function($scope, $http){
         $http.delete('/studentlog/' + id);
     };
 
-    /* Edit grabs a student by ID and sets that to the edit input area */
-    $scope.edit = function(id){
-        $http.get('/studentlist/' + id).success(function(response){
-            $scope.student = response;
-        });
-    };
-
     /* Update is the edit's submit button */
-    $scope.update = function(){
-        $http.put('/studentlist/' + $scope.student._id, $scope.student).success(function(response){
+    $scope.update = function(id){
+        $http.put('/studentlist/' + id, $scope.points).success(function(){
             refresh();
-            $scope.logAction("edit", response);
         }); 
     };
 
