@@ -33,17 +33,17 @@
                     <td><button class="btn btn-info" ng-click="update()">Update</button>&nbsp;&nbsp;<button class="btn btn-info" ng-click="deselect()">Clear</button></td>
                     
                 </tr>
-                <tr ng-repeat-start="student in studentlist" ng-click="showDetail(student); getHistory(student.pawPrint)" ng-class="{'danger-points-color': student.pointTotal >= 4, 'high-points-color': student.pointTotal > 2 && student.pointTotal < 4, 'low-points-color': student.pointTotal <= 2 && student.pointTotal > 1, 'very-low-points-color': student.pointTotal > 0 && student.pointTotal <= 1, 'default-color': student.pointTotal == 0}">
+                <tr ng-repeat-start="student in studentlist" ng-click="showDetail(student); getHistory(student._id)" ng-class="{'danger-points-color': student.pointTotal >= 4, 'high-points-color': student.pointTotal > 2 && student.pointTotal < 4, 'low-points-color': student.pointTotal <= 2 && student.pointTotal > 1, 'very-low-points-color': student.pointTotal > 0 && student.pointTotal <= 1, 'default-color': student.pointTotal == 0}">
                     <td>{{student.name}}</td>
                     <td>{{student.pawPrint}}</td>
                     <td>{{student.pointTotal}}</td>
-                    <td><button class="btn btn-danger" ng-click="remove(student._id)">Remove</button></td>
+                    <td><button class="btn btn-danger" ng-click="remove(student._id); removeLog(student._id);">Remove</button></td>
                     <td><button class="btn btn-warning" ng-click="edit(student._id)">Edit</button></td>
                 </tr>
                 <tr ng-repeat-end=" " ng-show="active==student" id="revealedRow">
                     <td colspan="5">
                         <div>
-                            <p id="historyHeader"><h2>{{student.name}}'s History</h2></p>
+                            <h2 id="historyHeader">{{student.name}}'s History</h2>
                             <ul ng-repeat="h in history">
                                 <li>{{h.date}} -- {{h.desc}}</li>
                             </ul>

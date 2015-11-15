@@ -25,7 +25,6 @@ myApp.controller('AppCtrl', ['$scope', '$http', function($scope, $http){
     /* Add a student to the list */
     $scope.addStudent = function(){
         $http.post('/studentlist', $scope.student);
-        $http.post('/studentlog', $scope.student);
         refresh();
     };
 
@@ -34,6 +33,10 @@ myApp.controller('AppCtrl', ['$scope', '$http', function($scope, $http){
         $http.delete('/studentlist/' + id).success(function(){
             refresh();    
         });
+    };
+
+    $scope.removeLog = function(id){
+        $http.delete('/studentlog/' + id);
     };
 
     /* Edit grabs a student by ID and sets that to the edit input area */
@@ -56,8 +59,8 @@ myApp.controller('AppCtrl', ['$scope', '$http', function($scope, $http){
         $scope.student = "";    
     };
 
-    $scope.getHistory = function(pawPrint){
-        $http.get('/studentlog/' + pawPrint).success(function(response){
+    $scope.getHistory = function(id){
+        $http.get('/studentlog/' + id).success(function(response){
             $scope.history = response;
         });
     };

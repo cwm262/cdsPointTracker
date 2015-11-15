@@ -8,18 +8,12 @@ body{
     line-height: 1.5em;
     color: #000000;
     background-color: #ffffff;
-    text-align: justify;
 }
 
 h1, h2, h3, h4, h5, h6 {
     color: #222;
     font-weight: 600;
     line-height: 1.3em;
-    margin-left: 1.3em;
-}
-
-h2 {
-    margin-top: 1.3em;
 }
 
 /* CHANGE COLOR OF ROW BACKGROUNDS BASED ON POINT TOTAL */
@@ -53,5 +47,6 @@ h2 {
 /* Format the Print User History Header */
 
 #historyHeader{
-    color: purple;
+    font-weight: 800;
+    text-align: center;
 }
