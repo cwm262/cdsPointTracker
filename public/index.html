@@ -36,7 +36,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat-start="student in studentlist" ng-click="showDetail(student); getHistory(student._id)" ng-class="{'danger-points-color': student.pointTotal >= 4, 'high-points-color': student.pointTotal > 2 && student.pointTotal < 4, 'low-points-color': student.pointTotal <= 2 && student.pointTotal > 1, 'very-low-points-color': student.pointTotal > 0 && student.pointTotal <= 1, 'default-color': student.pointTotal == 0}">
+                <tr ng-repeat-start="student in studentlist" ng-click="showDetail(student); getHistory(student._id); getWarnings(student._id)" ng-class="{'danger-points-color': student.pointTotal >= 4, 'high-points-color': student.pointTotal > 2 && student.pointTotal < 4, 'low-points-color': student.pointTotal <= 2 && student.pointTotal > 1, 'very-low-points-color': student.pointTotal > 0 && student.pointTotal <= 1, 'default-color': student.pointTotal == 0}">
                     <td>{{student.name}}</td>
                     <td>{{student.pawPrint}}</td>
                     <td>{{student.pointTotal}}</td>
@@ -57,7 +57,15 @@
                                 <label class="radio-inline">
                                     <input type="radio" ng-model="points.number" value="3" ng-required="true">
                                     No Call, No Show [3 pts]
-                                </label><br>
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" ng-model="points.number" value="-.5" ng-required="true">
+                                    Remove half-point
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" ng-model="points.number" value="-1" ng-required="true">
+                                    Remove 1 point
+                                </label>
                                 <div class="form-group">
                                     <label>Short Description:</label>
                                     <textarea class="form-control" rows="3" ng-model="points.description" ng-required="true"></textarea>
@@ -70,14 +78,43 @@
                                     <button ng-disabled="ptsForm.$invalid" id="submitPtsBtn" class="btn btn-warning" ng-click="update(student._id)">Submit Points</button>
                                 </p>
                             </form>
+                            <form role="form" name="warningForm">
+                                <h2 class="dropDownHeader">Give Warning</h2>
+                                <label class="radio-inline">
+                                    <input type="radio" ng-model="warnings.type" value="phone" ng-required="true">
+                                    Cell Phone Abuse
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" ng-model="warnings.type" value="uniform" ng-required="true">
+                                    Out of Uniform
+                                </label>
+                                <div class="form-group">
+                                    <label>Short Description:</label>
+                                    <textarea class="form-control" rows="3" ng-model="warnings.description" ng-required="true"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label>Manager/Supervisor:</label>
+                                    <input type="text" class="form-control" ng-model="warnings.author" ng-required="true">
+                                </div>
+                                <p>
+                                    <button ng-disabled="warningForm.$invalid" id="submitWarningsBtn" class="btn btn-warning" ng-click="warn(student._id)">Submit Warning</button>
+                                </p>
+
+                            </form>
+                            <div id="warningContainer">
+                                <h2 class="dropDownHeader">{{student.name}}'s Warning History</h2>
+                                <ul ng-repeat="w in warnHistory">
+                                    <li>{{w.date}} -- Mgr/Supervisor: {{w.author}} -- Type: {{w.type}} -- Description: {{w.description}}</li>
+                                </ul>
+                            </div>
                             <div id="historyContainer">
-                                <h2 class="dropDownHeader">{{student.name}}'s History</h2>
+                                <h2 class="dropDownHeader">{{student.name}}'s Point History</h2>
                                 <ul ng-repeat="h in history">
                                     <li>{{h.date}} -- Mgr/Supervisor: {{h.author}} -- Action: {{h.desc}} -- Description: {{h.description}}</li>
                                 </ul>
                             </div>
                             <hr>
-                            <span><button id="removeButton" class="btn btn-danger" ng-click="remove(student._id); removeLog(student._id);">Remove Student from Tracker</button></span>
+                            <span><button id="removeButton" class="btn btn-danger" ng-click="remove(student._id); removeLog(student._id); removeWarnings(student._id)">Remove Student from Tracker</button></span>
                             <span class="label label-warning">Warning: Irreversible</span>
                         </div>
                     </td>

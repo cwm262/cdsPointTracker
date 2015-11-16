@@ -1,7 +1,7 @@
 var express = require('express');
 var app = express();
 var mongojs = require('mongojs');
-var db = mongojs('studentlist', ['studentlist', 'studentlog']);
+var db = mongojs('studentlist', ['studentlist', 'studentlog', 'studentwarnings']);
 var bodyParser = require('body-parser');
 var dateFormat = require('dateformat');
 var now = new Date();
@@ -9,14 +9,6 @@ var now = new Date();
 app.use(express.static(__dirname + "/public"));
 
 app.use(bodyParser.json());
-
-app.get('/studentlist', function(req,res){
-    
-    db.studentlist.find(function(err, docs){
-        res.json(docs);
-    });
-   
-});
 
 app.post('/studentlist', function(req,res){
     req.body._id = 0;
@@ -30,6 +22,20 @@ app.post('/studentlist', function(req,res){
             desc: doc.name + " was added to the point tracker."
         });
         */
+    });
+});
+
+app.post('/studentwarnings/:id', function(req,res){
+    var id = req.params.id;
+    var newDate = dateFormat();
+    db.studentwarnings.insert({
+        id: id,
+        date: newDate,
+        type: req.body.type,
+        description: req.body.description,
+        author: req.body.author
+    }, function(err, doc){
+        res.json(doc);
     });
 });
 
@@ -47,10 +53,10 @@ app.delete('/studentlog/:id', function(req, res){
     });
 });
 
-app.get('/studentlist/:id', function(req,res){
+app.delete('/studentwarnings/:id', function(req,res){
     var id = req.params.id;
-    db.studentlist.findOne({_id: mongojs.ObjectId(id)}, function(err, doc){
-        res.json(doc);    
+    db.studentwarnings.remove({id: id}, function(err,doc){
+        res.json(doc);
     });
 });
 
@@ -89,10 +95,31 @@ app.put('/studentlist/:id', function(req,res){
     });
 });
 
+app.get('/studentlist', function(req,res){
+
+    db.studentlist.find(function(err, docs){
+        res.json(docs);
+    });
+
+});
+
+app.get('/studentlist/:id', function(req,res){
+    var id = req.params.id;
+    db.studentlist.findOne({_id: mongojs.ObjectId(id)}, function(err, doc){
+        res.json(doc);
+    });
+});
 
 app.get('/studentlog/:id', function(req, res){
     var search_id = req.params.id;
     db.studentlog.find({ id: mongojs.ObjectId(search_id) }, function(err, doc){
+        res.json(doc);
+    });
+});
+
+app.get('/studentwarnings/:id', function(req, res){
+    var sid = req.params.id;
+    db.studentwarnings.find({ id: sid }, function(err, doc){
         res.json(doc);
     });
 });

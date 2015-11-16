@@ -56,13 +56,6 @@ li{
     word-wrap:break-word;
 }
 
-@media only screen and (min-width: 961px){
-    li{
-        max-width:960px;
-        word-wrap:break-word;
-    }
-}
-
 @media only screen and (min-width: 360px ){
     li{
         max-width: 359px;
@@ -74,5 +67,12 @@ li{
     li{
         max-width:760px;
         word-wrap: break-word;
+    }
+}
+
+@media only screen and (min-width: 961px){
+    li{
+        max-width:960px;
+        word-wrap:break-word;
     }
 }

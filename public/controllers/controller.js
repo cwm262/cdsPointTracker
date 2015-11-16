@@ -10,6 +10,18 @@ myApp.controller('AppCtrl', ['$scope', '$http', function($scope, $http){
         pointTotal: 0
     };
 
+    $scope.points = {
+        number: 0,
+        description: "",
+        author: ""
+    };
+
+    $scope.warnings = {
+        type: "",
+        description: "",
+        author: ""
+    };
+
     /* Refresh is called to update the table/list */
     var refresh = function(){
         $http.get('/studentlist').then(function(response){
@@ -19,16 +31,13 @@ myApp.controller('AppCtrl', ['$scope', '$http', function($scope, $http){
             $scope.points.number = 0;
             $scope.points.description = "";
             $scope.points.author = "";
+            $scope.warnings.type = "";
+            $scope.warnings.description = "";
+            $scope.warnings.author = "";
         });
     };
 
     refresh();
-
-    $scope.points = {
-        number: 0,
-        description: "",
-        author: ""
-    };
 
     /* showDetail sets to active the student object (s) pertaining to the selected row */
     $scope.showDetail = function(s){
@@ -47,6 +56,12 @@ myApp.controller('AppCtrl', ['$scope', '$http', function($scope, $http){
         });
     };
 
+    $scope.warn = function(id){
+        $http.post('/studentwarnings/' + id, $scope.warnings).success(function(){
+            refresh();
+        });
+    };
+
     /* Remove a student from the list */
     $scope.remove = function(id){
         $http.delete('/studentlist/' + id).success(function(){
@@ -56,6 +71,10 @@ myApp.controller('AppCtrl', ['$scope', '$http', function($scope, $http){
 
     $scope.removeLog = function(id){
         $http.delete('/studentlog/' + id);
+    };
+
+    $scope.removeWarnings = function(id){
+        $http.delete('/studentwarnings/' + id);
     };
 
     /* Update is the edit's submit button */
@@ -77,6 +96,12 @@ myApp.controller('AppCtrl', ['$scope', '$http', function($scope, $http){
     $scope.getHistory = function(id){
         $http.get('/studentlog/' + id).success(function(response){
             $scope.history = response;
+        });
+    };
+
+    $scope.getWarnings = function(id){
+        $http.get('/studentwarnings/' + id).success(function(response){
+            $scope.warnHistory = response;
         });
     };
 }]);
