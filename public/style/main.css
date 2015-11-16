@@ -47,7 +47,10 @@ h1, h2, h3, h4, h5, h6 {
 /* Format the Drop Down Menu Header */
 
 .dropDownHeader{
-    font-weight: 800;
+    text-align: center;
+}
+
+.blankArea{
     text-align: center;
 }
 

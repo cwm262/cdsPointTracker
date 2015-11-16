@@ -96,12 +96,32 @@ myApp.controller('AppCtrl', ['$scope', '$http', function($scope, $http){
     $scope.getHistory = function(id){
         $http.get('/studentlog/' + id).success(function(response){
             $scope.history = response;
+            if($scope.history.length == 0){
+                $scope.blankHistory = "There's nothing to see here.";
+            }
+            else{
+                $scope.blankHistory = "";
+            }
         });
     };
 
     $scope.getWarnings = function(id){
         $http.get('/studentwarnings/' + id).success(function(response){
             $scope.warnHistory = response;
+            if($scope.warnHistory.length == 0){
+                $scope.blankWarnings = "There's nothing to see here.";
+            }
+            else{
+                $scope.blankWarnings = "";
+            }
         });
+    };
+
+    $scope.printDiv = function() {
+        var printContents = document.getElementById("historyCombined").innerHTML;
+        var popupWin = window.open('', '_blank', 'width=300,height=300');
+        popupWin.document.open()
+        popupWin.document.write('<html><head><link rel="stylesheet" type="text/css" href="style/main.css" /></head><body onload="window.print()">' + printContents + '</html>');
+        popupWin.document.close();
     };
 }]);
