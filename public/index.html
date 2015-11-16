@@ -15,7 +15,10 @@
 <body>
     <div class="container" ng-controller="AppCtrl">
         <h1>CDS Student Center Point Tracker</h1>
-        <form role="form" ng-submit="addStudent()">
+        <div>
+            <button class="btn btn-primary" ng-click="showAddForm = !showAddForm">Add a Student</button>
+        </div>
+        <form role="form" ng-submit="addStudent()" ng-show="showAddForm">
             <div class="form-group">
                 <label>Name:</label>
                 <input class="form-control" type="text" ng-model="student.name" name="name" required>
@@ -25,8 +28,9 @@
                 <input class="form-control" type="text" ng-model="student.pawPrint" name="pawPrint" required>
             </div>
             <input type="hidden" ng-model="student.pointTotal" ng-value="0">
-            <input type = "submit" value="Add Student">
+            <input type = "submit" value="Submit">
         </form>
+        <hr>
         <table class="table">
             <thead>
                 <tr>
@@ -44,7 +48,7 @@
                 <tr ng-repeat-end=" " ng-show="active==student" id="revealedRow">
                     <td colspan="3">
                         <div>
-                            <h2 class="dropDownHeader">Give Points</h2>
+                            <h2 class="dropDownHeader">Give/Remove Points</h2>
                             <form role="form" name="ptsForm">
                                 <label class="radio-inline">
                                     <input type="radio" ng-model="points.number" value="1" ng-required="true">
