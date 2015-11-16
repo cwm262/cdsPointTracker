@@ -20,13 +20,16 @@ app.get('/studentlist', function(req,res){
 
 app.post('/studentlist', function(req,res){
     req.body._id = 0;
-    var newDate = dateFormat();
+    //var newDate = dateFormat();
     db.studentlist.insert(req.body, function(err, doc){
+        res.json(doc);
+        /*
         db.studentlog.insert({
             id: doc._id,
             date: newDate,
             desc: doc.name + " was added to the point tracker."
         });
+        */
     });
 });
 
@@ -64,20 +67,22 @@ app.put('/studentlist/:id', function(req,res){
             update: {$set: {pointTotal: newPts}}}, function(err, doc){
             var desc = null;
             if(ptChange < 0) {
-                desc = ptChange + " points were removed.";
+                desc = ptChange + " points were removed";
             }
             else {
                 if(ptChange == 1) {
-                    desc = ptChange + " point was added.";
+                    desc = ptChange + " point was added";
                 }
                 else {
-                    desc = ptChange + " points were added.";
+                    desc = ptChange + " points were added";
                 }
             }
             db.studentlog.insert({
                 id: doc._id,
                 date: newDate,
-                desc: desc
+                desc: desc,
+                description: req.body.description,
+                author: req.body.author
             });
         });
         res.json(doc);

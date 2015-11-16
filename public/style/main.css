@@ -50,3 +50,29 @@ h1, h2, h3, h4, h5, h6 {
     font-weight: 800;
     text-align: center;
 }
+
+li{
+    max-width: 960px;
+    word-wrap:break-word;
+}
+
+@media only screen and (min-width: 961px){
+    li{
+        max-width:960px;
+        word-wrap:break-word;
+    }
+}
+
+@media only screen and (min-width: 360px ){
+    li{
+        max-width: 359px;
+        word-wrap: break-word;
+    }
+}
+
+@media only screen and (min-width: 800px){
+    li{
+        max-width:760px;
+        word-wrap: break-word;
+    }
+}

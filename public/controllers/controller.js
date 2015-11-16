@@ -2,6 +2,8 @@ var myApp = angular.module('myApp', ['ui.bootstrap']);
 
 myApp.controller('AppCtrl', ['$scope', '$http', function($scope, $http){
 
+    $scope.error = "";
+
     $scope.student = {
         name: "",
         pawPrint: "",
@@ -15,13 +17,17 @@ myApp.controller('AppCtrl', ['$scope', '$http', function($scope, $http){
             $scope.student.name = "";
             $scope.student.pawPrint = "";
             $scope.points.number = 0;
+            $scope.points.description = "";
+            $scope.points.author = "";
         });
     };
 
     refresh();
 
     $scope.points = {
-        number: 0
+        number: 0,
+        description: "",
+        author: ""
     };
 
     /* showDetail sets to active the student object (s) pertaining to the selected row */
@@ -36,8 +42,9 @@ myApp.controller('AppCtrl', ['$scope', '$http', function($scope, $http){
 
     /* Add a student to the list */
     $scope.addStudent = function(){
-        $http.post('/studentlist', $scope.student);
-        refresh();
+        $http.post('/studentlist', $scope.student).success(function(){
+            refresh();
+        });
     };
 
     /* Remove a student from the list */
@@ -53,6 +60,10 @@ myApp.controller('AppCtrl', ['$scope', '$http', function($scope, $http){
 
     /* Update is the edit's submit button */
     $scope.update = function(id){
+        if($scope.points.number == 0){
+            $scope.error = "You cannot submit 0 points.";
+            return;
+        }
         $http.put('/studentlist/' + id, $scope.points).success(function(){
             refresh();
         }); 
