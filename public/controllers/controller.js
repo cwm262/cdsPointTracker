@@ -1,6 +1,46 @@
-var myApp = angular.module('myApp', ['ui.bootstrap']);
+app.controller('AppCtrl', function($scope, $http, $location){
 
-myApp.controller('AppCtrl', ['$scope', '$http', function($scope, $http){
+    $scope.user = {username: '', password:''};
+    $scope.alert = '';
+
+    $scope.login = function(user){
+        $http.post('/auth/login', user).success(function(data){
+            $scope.loggeduser = data;
+            $location.path('/');
+        }).error(function(){
+            $scope.alert = "Login Failed";
+        });
+    };
+
+    $scope.logout = function(){
+        $http.get('/auth/logout').success(function(){
+            $scope.loggeduser = {};
+            $location.path('/signin');
+        }).error(function(){
+            $scope.alert = 'Logout Failed';
+        });
+    };
+
+    $scope.signup = function(user){
+        $http.post('/auth/signup', user).
+        success(function(data) {
+            $scope.alert = data.alert;
+        }).
+        error(function() {
+            $scope.alert = 'Registration failed'
+        });
+
+    };
+
+    $scope.userinfo = function() {
+        $http.get('/auth/currentuser').
+        success(function (data) {
+            $scope.loggeduser = data;
+        }).
+        error(function () {
+            $location.path('/signin');
+        });
+    };
 
     $scope.error = "";
 
@@ -124,4 +164,4 @@ myApp.controller('AppCtrl', ['$scope', '$http', function($scope, $http){
         popupWin.document.write('<html><head><link rel="stylesheet" type="text/css" href="style/main.css" /></head><body onload="window.print()">' + printContents + '</html>');
         popupWin.document.close();
     };
-}]);
+});
