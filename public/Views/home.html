@@ -1,0 +1,124 @@
+<div data-ng-init="userinfo()">
+    <img class="img-responsive" src="images/Dining-Logo-Retina.jpg" alt="CDS Image Logo" id="logo">
+    <div>
+        <button class="btn btn-primary" ng-click="showAddForm = !showAddForm">Add a Student</button>
+    </div>
+    <form role="form" ng-submit="addStudent()" ng-show="showAddForm">
+        <div class="form-group">
+            <label>Name:</label>
+            <input class="form-control" type="text" ng-model="student.name" name="name" required>
+        </div>
+        <div class="form-group">
+            <label>PawPrint:</label>
+            <input class="form-control" type="text" ng-model="student.pawPrint" name="pawPrint" required>
+        </div>
+        <input type="hidden" ng-model="student.pointTotal" ng-value="0">
+        <input type = "submit" value="Submit">
+    </form>
+    <hr>
+    <form role="form">
+        <div class="form-group">
+            <label>Search: </label>
+            <input class="form-control" type="text" ng-model="searchBox">
+        </div>
+    </form>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>PawPrint</th>
+            <th>Point Total</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat-start="student in studentlist | orderBy: '+name' | filter:searchBox" ng-click="showDetail(student); getHistory(student._id); getWarnings(student._id)" ng-class="{'danger-points-color': student.pointTotal >= 4, 'high-points-color': student.pointTotal > 2 && student.pointTotal < 4, 'low-points-color': student.pointTotal <= 2 && student.pointTotal > 1, 'very-low-points-color': student.pointTotal > 0 && student.pointTotal <= 1, 'default-color': student.pointTotal == 0}">
+            <td>{{student.name}}</td>
+            <td>{{student.pawPrint}}</td>
+            <td>{{student.pointTotal}}</td>
+        </tr>
+        <tr ng-repeat-end=" " ng-show="active==student" id="revealedRow">
+            <td colspan="3">
+                <div>
+                    <h2 class="dropDownHeader">Give/Remove Points</h2>
+                    <form role="form" name="ptsForm">
+                        <label for="points">Select the type of infraction:</label>
+                        <select class="form-control" ng-model="points.number">
+                            <option value="3">No Call, No Show [3 points]</option>
+                            <option value="2">Leaving Early w/o Permission [2 points]</option>
+                            <option value="2">Call In w/o Doctor's Note [2 points]</option>
+                            <option value=".5">Call In w/ More Than 2 Weeks Notice [.5 points]</option>
+                            <option value="1.5">Not Doing As Instructed [1.5 points]</option>
+                            <option value="1">Late With No Call [1 point]</option>
+                            <option value="1">Eating Behind Counter [1 point]</option>
+                            <option value="1">Taking Extended Breaks [1 point]</option>
+                            <option value="1">Out of Uniform [1 point]</option>
+                            <option value="1">Cell Phone Use [1 point]</option>
+                            <option value="1">Headphone Use [1 point]</option>
+                            <option value="2">Drawer Off By 1% or 5$ [2 points]</option>
+                            <option value=".5">Missed Employee Meeting [.5 points]</option>
+                        </select>
+                        <div class="form-group">
+                            <label>Short Description:</label>
+                            <textarea class="form-control" rows="3" ng-model="points.description" ng-required="true"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Manager/Supervisor:</label>
+                            <input type="text" class="form-control" ng-model="points.author" ng-required="true">
+                        </div>
+                        <p>
+                            <button ng-disabled="ptsForm.$invalid" id="submitPtsBtn" class="btn btn-warning" ng-click="update(student._id)">Submit Points</button>
+                        </p>
+                    </form>
+                    <form role="form" name="warningForm">
+                        <h2 class="dropDownHeader">Give Warning</h2>
+                        <label class="radio-inline">
+                            <input type="radio" ng-model="warnings.type" value="phone" ng-required="true">
+                            Cell Phone Abuse
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" ng-model="warnings.type" value="uniform" ng-required="true">
+                            Out of Uniform
+                        </label>
+                        <div class="form-group">
+                            <label>Short Description:</label>
+                            <textarea class="form-control" rows="3" ng-model="warnings.description" ng-required="true"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Manager/Supervisor:</label>
+                            <input type="text" class="form-control" ng-model="warnings.author" ng-required="true">
+                        </div>
+                        <p>
+                            <button ng-disabled="warningForm.$invalid" id="submitWarningsBtn" class="btn btn-warning" ng-click="warn(student._id)">Submit Warning</button>
+                        </p>
+                    </form>
+                    <hr>
+                    <div id="historyCombined">
+                        <h2 class="dropDownHeader"><u>{{student.name}}'s History</u></h2>
+                        <div id="warningContainer">
+                            <h3 class="dropDownHeader">Warning History</h3>
+                            <p class="blankArea">{{blankWarnings}}</p>
+                            <ul ng-repeat="w in warnHistory">
+                                <li>{{w.date}} -- Mgr/Supervisor: {{w.author}} -- Type: {{w.type}} -- Description: {{w.description}}</li>
+                            </ul>
+                        </div>
+                        <div id="historyContainer">
+                            <h3 class="dropDownHeader">Point History</h3>
+                            <p class="blankArea">{{blankHistory}}</p>
+                            <ul ng-repeat="h in history">
+                                <li>{{h.date}} -- Mgr/Supervisor: {{h.author}} -- Action: {{h.desc}} -- Description: {{h.description}}</li>
+                            </ul>
+                        </div>
+                        <button type="btn btn-primary" ng-click="printDiv()">Print History</button>
+                    </div>
+                    <hr>
+                    <span><button id="removeButton" class="btn btn-danger" ng-click="remove(student._id); removeLog(student._id); removeWarnings(student._id)">Remove Student from Tracker</button></span>
+                    <span class="label label-warning">Warning: Irreversible; Everything will be lost.</span>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="panel-footer">
+        <button class="btn btn-danger" ng-click="logout()">Logout  </button>
+    </div>
+</div>

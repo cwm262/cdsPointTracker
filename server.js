@@ -1,14 +1,27 @@
 var express = require('express');
 var app = express();
 var mongojs = require('mongojs');
+var mongoose = require('mongoose');
 var db = mongojs('studentlist', ['studentlist', 'studentlog', 'studentwarnings']);
 var bodyParser = require('body-parser');
 var dateFormat = require('dateformat');
+var cors = require('cors');
+var methodOverride = require('method-override');
 var now = new Date();
+
+mongoose.connect('mongodb://localhost/userDatabase');
+
+app.use(cors());
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use(methodOverride('X-HTTP-Method-Override'));
 
 app.use(express.static(__dirname + "/public"));
 
-app.use(bodyParser.json());
+require('./server/auth')(app);
+require('./server/basic')(app);
 
 app.post('/studentlist', function(req,res){
     req.body._id = 0;
@@ -127,3 +140,5 @@ app.get('/studentwarnings/:id', function(req, res){
 app.listen(3000);
 
 console.log('Server running on port 3000');
+
+exports = module.exports = app;
